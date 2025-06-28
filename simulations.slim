@@ -1,0 +1,68 @@
+// SLiM WF model for harbour porpoise neutral evolution with a split at 2790 generations ago
+
+initialize() {
+	 defineConstant("GENS_TOTAL", 100000);
+    defineConstant("GENS_SPLIT_NAT_MED", GENS_TOTAL - 2790);  // = 1210
+    defineConstant("GENS_SPLIT_UPW_BS", GENS_TOTAL - 1380);  // = 2620
+    defineConstant("GENS_SPLIT_IB_MA", GENS_TOTAL - 311);  // = 3689
+    defineConstant("GENS_HYB_NBB", GENS_TOTAL - 59);  // = 3949
+    
+
+    initializeSLiMModelType("WF");
+    initializeMutationRate(3e-7);
+    initializeMutationType("m1", 0.5, "f", 0.0);
+    initializeGenomicElementType("g1", m1, 1.0);
+    initializeGenomicElement(g1, 0, 100000);  // 100 kb region
+    initializeRecombinationRate(1e-8);
+}
+
+
+1 early() {
+    sim.addSubpop("p0", 100);  // ancestral population
+}
+
+GENS_SPLIT_NAT_MED early() {
+	 pi_p0 = calcPi(p0.haplosomes);
+	 catn("Nucleotide diversity (π) in the ancestral pop before split is: " + pi_p0);
+    
+    muts = size(sim.mutations.position);
+    catn("The number of mutations in the ancestral pop before split is: " + muts);
+	 sim.chromosomes.setMutationRate(3e-8);
+    sim.addSubpopSplit("p1", 9920, p0); // NAT
+    sim.addSubpopSplit("p2", 4130, p0); // MED
+
+    p0.setSubpopulationSize(0);  // remove ancestral pop
+}
+
+GENS_SPLIT_UPW_BS early() {
+    sim.addSubpopSplit("p3", 674, p2); // UP
+    sim.addSubpopSplit("p4", 1500, p2); // BS
+    p2.setSubpopulationSize(0);  // remove ancestral pop
+}
+
+GENS_SPLIT_IB_MA early() {
+    sim.addSubpopSplit("p5", 1080, p3); // MAU
+    sim.addSubpopSplit("p6", 1700, p3); // IB
+    p3.setSubpopulationSize(0);  // remove ancestral pop
+}
+
+GENS_HYB_NBB early() {
+    sim.addSubpop("p7", 4030); // NBB
+    p7.setMigrationRates(c(p1, p6), c(0.76, 0.24));
+}
+
+GENS_TOTAL late() {
+	 active_pops = sim.subpopulations;
+	 popLabels = c("NAT", "BS", "IB", "MA","NBB");
+	 for (i in 0:(size(active_pops)-2)){
+	 	for (j in 1:(size(active_pops)-1)){
+	 		if(i!=j){
+            pop1 = active_pops[i];
+            pop2 = active_pops[j];
+	 			FST = calcFST(pop1.haplosomes, pop2.haplosomes);
+	 			catn("FST: " + popLabels[i] + " " + popLabels[j] + " " +FST);
+	 		}
+	 	}
+	 }
+	 sim.simulationFinished();
+	 }
