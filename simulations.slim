@@ -1,14 +1,15 @@
 // SLiM WF model for harbour porpoise neutral evolution with a split at 2790 generations ago
 
 initialize() {
-	 defineConstant("GENS_TOTAL", 100000);
+	defineConstant("GENS_TOTAL", 100000);
     defineConstant("GENS_SPLIT_NAT_MED", GENS_TOTAL - 2790);  // = 1210
     defineConstant("GENS_SPLIT_UPW_BS", GENS_TOTAL - 1380);  // = 2620
     defineConstant("GENS_SPLIT_IB_MA", GENS_TOTAL - 311);  // = 3689
     defineConstant("GENS_HYB_NBB", GENS_TOTAL - 59);  // = 3949
     
-
+   
     initializeSLiMModelType("WF");
+    initializeTreeSeq(); 
     initializeMutationRate(3e-7);
     initializeMutationType("m1", 0.5, "f", 0.0);
     initializeGenomicElementType("g1", m1, 1.0);
@@ -64,5 +65,6 @@ GENS_TOTAL late() {
 	 		}
 	 	}
 	 }
+     sim.treeSeqOutput("output.trees");
 	 sim.simulationFinished();
 	 }
