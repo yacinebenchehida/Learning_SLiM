@@ -1,11 +1,11 @@
 // SLiM WF model for harbour porpoise neutral evolution with a split at 2790 generations ago
 
 initialize() {
-	defineConstant("GENS_TOTAL", 100000);
-    defineConstant("GENS_SPLIT_NAT_MED", GENS_TOTAL - 2790);  // = 1210
-    defineConstant("GENS_SPLIT_UPW_BS", GENS_TOTAL - 1380);  // = 2620
-    defineConstant("GENS_SPLIT_IB_MA", GENS_TOTAL - 311);  // = 3689
-    defineConstant("GENS_HYB_NBB", GENS_TOTAL - 59);  // = 3949
+    defineConstant("GENS_TOTAL", 100000);  // Let the population run for 100000 generations in total => accumulation of genetic diversity.
+    defineConstant("GENS_SPLIT_NAT_MED", GENS_TOTAL - 2790);  // = generation 97210
+    defineConstant("GENS_SPLIT_UPW_BS", GENS_TOTAL - 1380);  // = generation 98620
+    defineConstant("GENS_SPLIT_IB_MA", GENS_TOTAL - 311);  // = generation 99689
+    defineConstant("GENS_HYB_NBB", GENS_TOTAL - 59);  // = generation 99941
     
    
     initializeSLiMModelType("WF");
